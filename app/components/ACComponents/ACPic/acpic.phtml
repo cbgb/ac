@@ -1,0 +1,50 @@
+{block script}
+<script type="text/javascript">
+$(document).ready(function() {
+	$('#acPic').acPic({
+		server:	{link server!}
+	});
+});
+</script>
+
+{/block}
+
+<div id="acPic" class="ui-helper-clearfix">
+
+	<div id="acPicControls" class="ui-widget-header ui-corner-top ui-helper-clearfix">
+
+		<div id="upQueue" class="uploadifyQueue"></div>
+		<div class="acBtn" title="Upload file(s) on server">
+			<input type="file" id="uploadify" name="uploadify" />
+		</div>
+		<a id="acStartUpload" href="javascript:jQuery('#uploadify').uploadifyUpload()" title="Start uploading">
+			<img src="/css/img/Check.png" />
+		</a>
+		<a id="acCancelAll" href="javascript:jQuery('#uploadify').uploadifyClearQueue()" title="Cancel all uploads">
+			<img src="/css/img/Exit.png" />
+		</a>
+
+	</div>
+
+	<div id="acPicList" class="ui-widget-content">
+
+	{if $imageList}
+		{foreach $imageList as $image}
+		<div class="acPicThumbnail" title="{$image}">
+	
+			<img src="{$thumbs}{$image}" alt="{$image}" />
+			<span>{$image|truncate,'14'}</span>
+
+		</div>
+		{/foreach}
+	{/if}
+
+	</div>
+
+	<div id="acPicTrash" class="ui-widget-header ui-corner-bottom ui-helper-clearfix" title="Image deletor">
+
+		<div id="acTrashImg" class="acBtn acTrashImg" style="float: right;"></div>
+
+	</div>
+
+</div>

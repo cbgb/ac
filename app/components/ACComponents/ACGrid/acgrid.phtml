@@ -1,0 +1,29 @@
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('.acGrid').acGrid({
+			server:	{link server!}
+		});
+	});
+</script>
+
+<h3>{$header}</h3>
+
+{foreach $cols as $col}
+	{!$col->html}
+{/foreach}
+<table class="acGrid">
+	<tr>
+		{foreach $cols as $col}
+			<th>{$col->caption}</th>
+		{/foreach}
+	</tr>
+	
+	{foreach $rowset as $row}
+		<tr>
+			{foreach $cols as $col}
+				<td id="{$col->index}-{$row->id}">{!$col->filter($row)}</td>
+   		{/foreach}
+		</tr>
+	{/foreach}
+	
+</table>

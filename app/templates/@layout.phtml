@@ -1,0 +1,56 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Language" content="en" />
+
+	<meta name="description" content="Nette powered application">
+	<meta name="robots" content="{$robots}" n:ifset="$robots">
+
+	<title>Administrative components</title>
+
+	<link rel="stylesheet" href="{$basePath}/css/screen.css" media="screen,projection,tv" type="text/css">
+	<link rel="stylesheet" href="{$basePath}/themes/default/jquery-ui-1.8rc3.custom.css" media="screen,projection,tv" type="text/css">
+	<link rel="stylesheet" href="{$basePath}/css/print.css" media="print" type="text/css">
+	<link rel="stylesheet" href="{$basePath}/css/ac.css" media="screen, tv, projection" />
+	<link rel="shortcut icon" href="{$basePath}/favicon.ico" type="image/x-icon">
+
+	<script type="text/javascript" src="{$basePath}/js/jquery-1.4.2.js"></script>
+	<script type="text/javascript" src="{$basePath}/js/jquery-ui-1.8rc3.custom.js"></script>
+	<script type="text/javascript" src="{$basePath}/js/jquery.ac-grid.js"></script>
+	<script type="text/javascript" src="{$basePath}/js/jquery.ac-pic.js"></script>
+	<script type="text/javascript" src="{$basePath}/js/jquery.uploadify.v2.1.0.js"></script>
+	<script type="text/javascript" src="{$basePath}/js/swfobject.js"></script>
+
+	{block script}
+	{/block}
+</head>
+
+<body>
+
+	<div id="container">
+	
+		{foreach $flashes as $flash}<div class="flash {$flash->type}">{$flash->message}</div>{/foreach}
+	
+		<div id="header">
+			{block header}
+				---
+	 		{/block}
+		</div>
+	
+		<div id="content">
+			{block content}
+			{/block}
+		</div>
+		
+		<div id="footer">
+			{block footer}
+				---
+	  	{/block}
+		</div>
+
+	</div>
+
+</body>
+</html>

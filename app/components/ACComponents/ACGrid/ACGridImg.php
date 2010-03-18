@@ -23,7 +23,7 @@ class ACGridImg extends ACGridColumn
 		$this->width = $width ? $width : 90;
 		$this->height = $height ? $height : 60;
 		$this->thPrefix = 'thumb_';
-		$this->defaultImage = '/css/img/nopic.png';
+		$this->defaultImage = 'empty.png';
 	}
 
 
@@ -51,7 +51,7 @@ class ACGridImg extends ACGridColumn
 
 	public function filter($row)
 	{
-		$uri = $this->defaultImage;
+		$uri = $this->uri . '/' . $this->thPrefix . $this->defaultImage;
 		$filename = '';
 		$w = $this->width;
 		$h = $this->height;

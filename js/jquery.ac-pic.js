@@ -51,8 +51,8 @@
 			},
 			onComplete:	function(event, queueID, fileObj) {
 				$('#acStartUpload').hide();
-				var thDiv = $('<div class="acPicThumbnail"></div>');
 				var txt = fileObj.name;
+				var thDiv = $('<div class="acPicThumbnail" title="' + txt + '"></div>');
 				var img = $('<img src="' + thumbs + txt + '" />');
 				var span = $('<span></span>').text(txt);
 				thDiv.append(img).append(span).draggable(dragOpts);

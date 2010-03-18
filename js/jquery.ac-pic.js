@@ -9,6 +9,7 @@
 		var opts = $.extend({}, $.fn.acPic.defaults, options);
 
 		var x = this;
+		var server = opts.server;
 		var folder = opts.folder;
 		var thumbs = opts.thumbs + '/' + opts.prefix;
 		var th = $(x).find('.acPicThumbnail');
@@ -35,8 +36,9 @@
 		//include uploadify
 		$('#uploadify').uploadify({
 			uploader:		opts.uploader,
-			script:			opts.server,
+			script:			server,
 			queueID:		'upQueue',
+			fileExt:		'*.bmp;*.gif;*.jpg;*.png',
 	    buttonImg:	'/css/img/Add.png',
 	 		height: 		32,
 		  width:			32,
@@ -77,10 +79,10 @@
 			drop:	function(event, ui) {
 				var obj = ui.draggable;
 				var name = obj.attr('title');
+				$.fn.acPic.update(server, 'delete', 'json', name, function(res) {
+					if (res.result == 'Ok') $(obj).remove();
+				});
 				$('#acTrashImg').toggleClass('acTrashImgActive');
-				setTimeout(function() {
-					$(obj).remove();
-				}, 50);
 			}
 		});
 
@@ -102,6 +104,22 @@
 
 	return this;
 })(jQuery);
+
+//AJAX update request function
+$.fn.acPic.update = function(server, cmd, type, filename, callback)
+{
+	$.post(server, {
+		cmd:	cmd,
+		type:	type,
+		filename: filename
+	}, function(res) {
+		if (type == 'json') {	//JSON response
+			callback(eval('(' + res + ')'));
+		} else {							//HTML response
+			callback(res);
+		}
+	});
+}
 
 //default values
 $.fn.acPic.defaults = {

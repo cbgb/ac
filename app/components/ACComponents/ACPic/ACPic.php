@@ -18,7 +18,7 @@ class ACPic extends Control
 	public function  __construct($imagePath, $thumbPath = NULL, $thPrefix = NULL)
 	{
 		parent::__construct();
-		$this->imagePath = WWW_DIR . '/' . $imagePath;
+		$this->imagePath = WWW_DIR . '/' . $imagePath ? $imagePath : 'images';
 		$this->imageUri = Environment::getVariable('baseUri') . $imagePath;
 		$this->thumbPath = $thumbPath ? $thumbPath : 'thumbs';
 		$this->thPrefix = $thPrefix ? $thPrefix : 'thumb_';
@@ -87,25 +87,35 @@ class ACPic extends Control
 
 	public function handleServer()
 	{
-		if (!empty($_FILES)) {
+		foreach ($_POST as $var => $value) $$var = $value;
+
+		$res = 'Ok';									//suppose success
+
+		if (!empty($_FILES)) {				//new file uploaded
 			$tempFile = $_FILES['Filedata']['tmp_name'];
-			$targetPath = WWW_DIR . '/images/';
-			$targetFile = $targetPath . $_FILES['Filedata']['name'];
-
-	// $fileTypes  = str_replace('*.','',$_REQUEST['fileext']);
-	// $fileTypes  = str_replace(';','|',$fileTypes);
-	// $typesArray = split('\|',$fileTypes);
-	// $fileParts  = pathinfo($_FILES['Filedata']['name']);
-
-	// if (in_array($fileParts['extension'],$typesArray)) {
-		// Uncomment the following line if you want to make the directory if it doesn't exist
-		// mkdir(str_replace('//','/',$targetPath), 0755, true);
-
+			$targetFile = $this->imagePath . '/' . $_FILES['Filedata']['name'];
 			if(move_uploaded_file($tempFile,$targetFile)) {
 				$this->checkImages();
-				echo '1';
+				$res = '1';
+			}
+		} else {											//no upload => check command
+			switch ($cmd) {
+				case 'delete':						//delete => delete image & thumbnail
+					$path = $this->imagePath . '/' . $filename;
+					$thumb = $this->imagePath . '/' . $this->thumbPath . '/' . $this->thPrefix . $filename;
+					if (is_file($path)) if (!unlink($path)) $res = 'Unable to delete image ' . $filename;
+					if (is_file($thumb)) if (!unlink($thumb)) $res = 'Unable to delete thumbnail ' . $this->thPrefix . $filename;
+					break;
+				default:									//unknown command sent
+					$res = 'Unrecognised command ' . $cmd;
+					break;
+			}
+			if ($type == 'json') {			//format the response
+				$wrk['result'] = $res;
+				$res = json_encode($wrk);
 			}
 		}
+		die ($res);
 	}
 
 }

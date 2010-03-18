@@ -12,7 +12,8 @@
 			var thumbs = opts.thumbs;					//short path for thumbnails (IMAGE fields)
 			var oldValue = null;							//original field value
 
-			var dropOpts = {									//options for droppable fields (IMAGE)
+			//IMAGE field drop event handle
+			var imgDropOpts = {
 				drop:	function(event, ui) {
 					var imgDiv = this;
 					var oldValue = $(imgDiv).attr('title');
@@ -22,7 +23,7 @@
 						processStart(info.obj, info.left, info.top, function() {
 							$.fn.acGrid.update(server, 'update', 'html', info.row, info.col, newValue, function(res) {
 								processReady(function() {
-									var newDiv = $(res).droppable(dropOpts);
+									var newDiv = $(res).droppable(imgDropOpts);
 									$(imgDiv).replaceWith(newDiv);
 								}, rate);
 							});
@@ -30,7 +31,6 @@
 					}
 				}
 			};
-
 
 			//case TEXT type field
 			$('div.text')
@@ -59,7 +59,7 @@
 		
 		//case SELECTBOX driven field
 		$('div.select')
-		.click(function() {									//field clicked => invoke selectbox
+		.live('click', function() {									//field clicked => invoke selectbox
 			var selDiv = this;
 			var txt = $(selDiv).html();
 			var info = getContainer(selDiv);
@@ -99,9 +99,9 @@
 			});
 		});
 
-		//case IMAGE field (droppable options prepared)
+		//case IMAGE field
 		$('div.image')
-		.droppable(dropOpts);
+		.droppable(imgDropOpts);
 
 		return this;
 	}

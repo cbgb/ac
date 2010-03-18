@@ -88,7 +88,7 @@ class ACGrid extends Control
 	{
 		foreach ($_POST as $var => $value) $$var = $value;
 
-		$wrk['result'] = 'Ok';	//suppose json & success
+		$wrk['result'] = 'Ok';	//suppose success
 
 		switch ($cmd) {
 			case 'update':

@@ -1,8 +1,11 @@
 <?php
 /**
- * Description of ACGridImg
+ * @author Petr Blazicek
+ * @copyright 2010
+ */
+/**
+ * Image column class
  *
- * @author Petr Blažíček
  */
 class ACGridImg extends ACGridColumn
 {
@@ -15,6 +18,15 @@ class ACGridImg extends ACGridColumn
 	protected $defaultImage;
 
 
+	/**
+	 * Constructor
+	 * 
+	 * @param string $index		column index
+	 * @param string $caption	column caption
+	 * @param string $folder	image thumbnail directory
+	 * @param integer $width	column width (in pixels)
+	 * @param integer $height column height (in pixels)
+	 */
 	public function  __construct($index, $caption, $folder, $width, $height) {
 		parent::__construct($index, $caption, $width);
 		$this->folder = $folder ? $folder : 'images/thumbs';
@@ -28,6 +40,7 @@ class ACGridImg extends ACGridColumn
 
 
 	/****** Setters & Getters **********************/
+
 	public function setFolder($folder) {
 		$this->folder = $folder;
 	}
@@ -49,6 +62,12 @@ class ACGridImg extends ACGridColumn
 	}
 
 
+	/**
+	 * Render the html block
+	 *
+	 * @param DibiFluent $row	table row
+	 * @return string					html block
+	 */
 	public function filter($row)
 	{
 		$uri = $this->uri . '/' . $this->thPrefix . $this->defaultImage;

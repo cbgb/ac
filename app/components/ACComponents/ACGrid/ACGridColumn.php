@@ -1,10 +1,11 @@
 <?php
-
 /**
- * @author Ladislak Liholak
+ * @author Petr Blazicek
  * @copyright 2010
  */
-
+/**
+ * Column base class
+ */
 abstract class ACGridColumn extends Control
 {
 	protected $index;
@@ -16,6 +17,14 @@ abstract class ACGridColumn extends Control
 	protected $html;
 	
 
+	/**
+	 * Constructor
+	 *
+	 * @param strind $index		column index
+	 * @param <type> $caption	column caption
+	 * @param <type> $width		column width
+	 * @param <type> $html		extending html
+	 */
 	public function __construct($index, $caption = NULL, $width = NULL, $html = NULL)
 	{
 		$this->index = $index;
@@ -25,40 +34,46 @@ abstract class ACGridColumn extends Control
 	}
 
 	/****** Setters & Getters **********************/
-	public function setIndex($v)
-	{
-		$this->index = $v;
-	}
-	public function getIndex()
-	{
+
+	public function getIndex() {
 		return $this->index;
 	}
-	public function setCaption($v)
-	{
-		$this->caption = $v;
+
+	public function setIndex($index) {
+		$this->index = $index;
 	}
-	public function getCaption()
-	{
+
+	public function getCaption() {
 		return $this->caption;
 	}
-	public function setWidth($v)
-	{
-		$this->width = $v;
+
+	public function setCaption($caption) {
+		$this->caption = $caption;
 	}
-	public function getWidth()
-	{
+
+	public function getWidth() {
 		return $this->width;
-	}	
-	public function setHtml($v)
-	{
-		$this->html = $v;
 	}
-	public function getHtml()
-	{
+
+	public function setWidth($width) {
+		$this->width = $width;
+	}
+
+	public function getHtml() {
 		return $this->html;
-	}	
+	}
+
+	public function setHtml($html) {
+		$this->html = $html;
+	}
 
 
+	/**
+	 * Render the html block
+	 * 
+	 * @param DibiFluent $row	table row
+	 * @return string					html block
+	 */
 	public function filter($row)
 	{
 		$value = $row[$this->index];

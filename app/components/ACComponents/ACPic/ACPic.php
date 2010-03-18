@@ -1,20 +1,40 @@
 <?php
 /**
- * Description of ACPic
+ * @author Petr Blazicek
+ * @copyright 2010
+ */
+/**
+ * class ACPic
  *
- * @author Petr Blažíček
+ * Image uploading component
+ *
+ * Thumbnail directory is supposed as
+ * image subdirectory. If needed will be created.
  */
 class ACPic extends Control
 {
 	protected $imagePath;
+
 	protected $imageUri;
+
 	protected $thumbPath;
+
 	protected $thPrefix;
+
 	protected $imageWidth;
+
 	protected $imageHeight;
+
 	protected $imageList;
 
 
+	/**
+	 * Constructor
+	 * 
+	 * @param string $imagePath	image directory
+	 * @param string $thumbPath	thumbnail directory
+	 * @param string $thPrefix	thumbnail prefix
+	 */
 	public function  __construct($imagePath, $thumbPath = NULL, $thPrefix = NULL)
 	{
 		parent::__construct();
@@ -57,12 +77,21 @@ class ACPic extends Control
 	}
 
 
+	/**
+	 * Checks the thumbnail subdirectory.
+	 * If not exists, is created.
+	 * Missing thumbnails are created.
+	 */
 	protected function checkImages()
 	{
-		$thumbs = $this->imagePath . '/' . $this->thumbPath . '/' . $this->thPrefix;
+		$thumbs = $this->imagePath . '/' . $this->thumbPath;
+		if (!file_exists($thumbs)) mkdir($thumbs);
+		$thumbs .= '/' . $this->thPrefix;
+		$empty = FALSE;	//dummy picture present flag
 		foreach (new DirectoryIterator($this->imagePath) as $fileInfo) {
 			if ($fileInfo->isDir()) continue;
 			$fileName = $fileInfo->getFileName();
+			if ($fileName == 'empty.png') $empty = TRUE;
 			if (!file_exists($thumbs . $fileName)) {
 				$image = Image::fromFile($this->imagePath . '/' . $fileName)
 					->resize($this->imageWidth, $this->imageHeight);
@@ -70,8 +99,16 @@ class ACPic extends Control
 			}
 			$this->imageList[] = $fileName;
 		}
+		if (!$empty) {
+			if (!copy(WWW_DIR . '/css/img/empty.png', $this->imagePath . '/empty.png'))
+				die ('File not found. (empty.png)');
+			$this->checkImages();
+		}
 	}
 
+	/**
+	 * Renders the template
+	 */
 	public function render()
 	{
 		$this->checkImages();
@@ -85,6 +122,9 @@ class ACPic extends Control
 		$this->template->render();
 	}
 
+	/**
+	 * AJAX request server handle
+	 */
 	public function handleServer()
 	{
 		foreach ($_POST as $var => $value) $$var = $value;

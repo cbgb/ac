@@ -4,8 +4,11 @@
  * @copyright 2010
  */
 /**
- * Selectbox driven column class
+ * Administrative Components
  *
+ * class ACGridSelect
+ *
+ * Selectbox driven column class
  */
 class ACGridSelect extends ACGridColumn
 {
@@ -64,5 +67,5 @@ class ACGridSelect extends ACGridColumn
 	}
 
 }
-
+//TODO: options from database
 ?>

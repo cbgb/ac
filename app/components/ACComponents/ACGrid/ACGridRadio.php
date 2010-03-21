@@ -4,8 +4,11 @@
  * @copyright 2010
  */
 /**
- * Radio button list column class
+ * Administrative Components
  *
+ * class ACGridRadio
+ *
+ * Radio button list column class
  */
 class ACGridRadio extends ACGridColumn
 {

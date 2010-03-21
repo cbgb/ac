@@ -4,6 +4,8 @@
  * @copyright 2010
  */
 /**
+ * Administrative Components
+ *
  * class ACGrid
  *
  * Editable grid component
@@ -20,6 +22,8 @@ class ACGrid extends Control
 
 	protected $page;
 
+	protected $rate;
+
 
 	/**
 	 * Constructor
@@ -34,6 +38,7 @@ class ACGrid extends Control
 		$this->table = $table;
 		$this->model = new RootModel($table);
 		$this->header = $header ? $header : strtoupper($table);
+		$this->rate = 'fast';
 	}
 	
 
@@ -53,6 +58,10 @@ class ACGrid extends Control
 
 	public function setHeader($header) {
 		$this->header = $header;
+	}
+
+	public function setRate($rate) {
+		$this->rate = $rate;
 	}
 
 
@@ -120,7 +129,7 @@ class ACGrid extends Control
 		$this->template->header = $this->header;
 		$this->template->cols = $this->columns;
 		$this->template->rowset = $rowset;
-		$this->template->r = 0;
+		$this->template->rate = $this->rate;
 		
 		$this->template->setFile(dirname(__FILE__) . '/acgrid.phtml');
 		$this->template->render();

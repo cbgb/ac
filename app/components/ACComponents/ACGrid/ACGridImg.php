@@ -4,8 +4,11 @@
  * @copyright 2010
  */
 /**
- * Image column class
+ * Administrative Components
  *
+ * class ACGridImg
+ *
+ * Image column class
  */
 class ACGridImg extends ACGridColumn
 {

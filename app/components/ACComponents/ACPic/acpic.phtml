@@ -2,7 +2,8 @@
 <script type="text/javascript">
 $(document).ready(function() {
 	$('#acPic').acPic({
-		server:	{link server!}
+		server:	{link server!},
+		rate:		{$rate}
 	});
 });
 </script>
@@ -14,12 +15,15 @@ $(document).ready(function() {
 	<div id="acPicControls" class="ui-widget-header ui-corner-top ui-helper-clearfix">
 
 		<div id="upQueue" class="uploadifyQueue"></div>
+
 		<div class="acBtn" title="Upload file(s) on server">
 			<input type="file" id="uploadify" name="uploadify" />
 		</div>
+
 		<a id="acStartUpload" href="javascript:jQuery('#uploadify').uploadifyUpload()" title="Start uploading">
 			<img src="/css/img/Check.png" />
 		</a>
+
 		<a id="acCancelAll" href="javascript:jQuery('#uploadify').uploadifyClearQueue()" title="Cancel all uploads">
 			<img src="/css/img/Exit.png" />
 		</a>
@@ -29,14 +33,16 @@ $(document).ready(function() {
 	<div id="acPicList" class="ui-widget-content">
 
 	{if $imageList}
+
 		{foreach $imageList as $image}
 		<div class="acPicThumbnail" title="{$image}">
 	
 			<img src="{$thumbs}{$image}" alt="{$image}" />
-			<span>{$image|truncate,'14'}</span>
+			<p>{$image|truncate,'14'}</p>
 
 		</div>
 		{/foreach}
+
 	{/if}
 
 	</div>

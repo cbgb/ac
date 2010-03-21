@@ -1,20 +1,28 @@
-/*
- *acPic
+/**
+ * @author Petr Blazicek
+ * @copyright 2010
+ */
+/**
+ * Administrative Components
  *
- *Pictures uploading plugin
+ * acPic
+ *
+ * Image uploading plugin
+ * uses flash (UPLOADIFY) for multi-uploads
  */
 (function($) {
 	$.fn.acPic = function(options) {
 
 		var opts = $.extend({}, $.fn.acPic.defaults, options);
 
-		var x = this;
-		var server = opts.server;
-		var folder = opts.folder;
-		var thumbs = opts.thumbs + '/' + opts.prefix;
-		var th = $(x).find('.acPicThumbnail');
+		var x = this;												//this alias
+		var server = opts.server;						//PHP backend link
+		var upfServer = lnkServer(server);	//the same link without other params (for uloadify)
+		var folder = opts.folder;						//thumbnails directory
+		var thumbs = opts.thumbs + '/' + opts.prefix;	//complete string before the image name
+		var th = $(x).find('.acPicThumbnail');				//picture containers
 		var pic = null;
-		var dragOpts = {
+		var dragOpts = {										//draggable objects (image containers) options
 			helper:		'clone',
 			appendTo:	'body',
 			opacity:	0.5,
@@ -23,9 +31,9 @@
 			zIndex:		333
 		};
 
-		$(x).dialog({
-			height:			360,
-			width:			405,
+		$(x).dialog({												//pictures dialog options
+			height:			350,
+			width:			425,
 			minHeight:	200,
 			minWidth:		200,
 			autoOpen:		false,
@@ -34,10 +42,11 @@
 		});
 
 		//include uploadify
-		$('#uploadify').uploadify({
+		$('#uploadify').uploadify({					//uploadify settings
 			uploader:		opts.uploader,
-			script:			server,
+			script:			upfServer,
 			queueID:		'upQueue',
+			fileDesc:		'Only images allowed',
 			fileExt:		'*.bmp;*.gif;*.jpg;*.png',
 	    buttonImg:	'/css/img/Add.png',
 	 		height: 		32,
@@ -56,10 +65,9 @@
 				var txt = fileObj.name;
 				var thDiv = $('<div class="acPicThumbnail" title="' + txt + '"></div>');
 				var img = $('<img src="' + thumbs + txt + '" />');
-				var span = $('<span></span>').text(txt);
-				thDiv.append(img).append(span).draggable(dragOpts);
+				var pgf = $('<p></p>').text(txt);
+				thDiv.append(img).append(pgf).draggable(dragOpts);
 				$('#acPicList').append(thDiv);
-				var prd = 'mrd';
 			},
 			onAllComplete:	function(event, data, filesUploaded, errors, allBytesLoaded, speed) {
 				$('#acCancelAll').hide();
@@ -68,7 +76,7 @@
 
 		$(th).draggable(dragOpts);
 
-		$('#acPicTrash').droppable({
+		$('#acPicTrash').droppable({				//picture dialog trash droppable options
 			accept:	"div[title!='empty.png']",
 			over:	function() {
 				$('#acTrashImg').toggleClass('acTrashImgActive');
@@ -86,10 +94,20 @@
 			}
 		});
 
-		$('div.image').click(function() {
+		$('div.image').click(function() {		//open dialog when picture field clicked
 			$(x).dialog('open');
 		});
 
+	}
+
+	//creates 'pure' link to server backend (for uploadify)
+	function lnkServer(lnk)
+	{
+		var wrk = lnk.split('?');
+		var str = wrk[0];
+		wrk = wrk[1].split('&');
+		str += '?' + wrk[wrk.length - 1];
+		return str;
 	}
 
 	//writes message on console (if available) or alert
@@ -131,3 +149,4 @@ $.fn.acPic.defaults = {
 	auto:			false,
 	multi:		true
 };
+//TODO: functionality in the fuckin' IE (flash button)

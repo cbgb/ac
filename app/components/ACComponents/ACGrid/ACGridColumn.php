@@ -4,6 +4,10 @@
  * @copyright 2010
  */
 /**
+ * Administrative Components
+ *
+ * class ACGridColumn
+ *
  * Column base class
  */
 abstract class ACGridColumn extends Control

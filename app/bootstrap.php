@@ -1,6 +1,6 @@
 <?php
 
-require LIBS_DIR . '/loader.php';
+require LIBS_DIR . '/Nette/loader.php';
 
 Debug::enable();
 Debug::$strictMode = TRUE;

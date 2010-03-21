@@ -4,6 +4,8 @@
  * @copyright 2010
  */
 /**
+ * Administrative Components
+ *
  * class ACPic
  *
  * Image uploading component
@@ -27,6 +29,8 @@ class ACPic extends Control
 
 	protected $imageList;
 
+	protected $rate;
+
 
 	/**
 	 * Constructor
@@ -44,6 +48,7 @@ class ACPic extends Control
 		$this->thPrefix = $thPrefix ? $thPrefix : 'thumb_';
 		$this->imageWidth = 90;
 		$this->imageHeight = 60;
+		$this->rate = 'fast';
 	}
 
 
@@ -74,6 +79,10 @@ class ACPic extends Control
 
 	public function setListId($listId) {
 		$this->listId = $listId;
+	}
+
+	public function setRate($rate) {
+		$this->rate = $rate;
 	}
 
 
@@ -117,6 +126,7 @@ class ACPic extends Control
 		$this->template->thumbPath = $this->thumbPath;
 		$this->template->thPrefix = $this->thPrefix;
 		$this->template->thumbs = $this->imageUri . '/' . $this->thumbPath . '/' . $this->thPrefix;
+		$this->template->rate = $this->rate;
 
 		$this->template->setFile(dirname(__FILE__) . '/acpic.phtml');
 		$this->template->render();
@@ -134,7 +144,7 @@ class ACPic extends Control
 		if (!empty($_FILES)) {				//new file uploaded
 			$tempFile = $_FILES['Filedata']['tmp_name'];
 			$targetFile = $this->imagePath . '/' . $_FILES['Filedata']['name'];
-			if(move_uploaded_file($tempFile,$targetFile)) {
+			if(move_uploaded_file($tempFile, $targetFile)) {
 				$this->checkImages();
 				$res = '1';
 			}
@@ -159,4 +169,5 @@ class ACPic extends Control
 	}
 
 }
+
 ?>

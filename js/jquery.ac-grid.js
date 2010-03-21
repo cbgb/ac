@@ -1,107 +1,113 @@
-/*
- *acGrid
- *Editable datagrid plugin
+/**
+ * @author Petr Blazicek
+ * @copyright 2010
+ */
+/**
+ * Administrative Components
+ *
+ * acGrid
+ *
+ * Editable grid plugin
  */
 (function($) {
 	$.fn.acGrid = function(options) {
 		
 		var opts = $.extend({}, $.fn.acGrid.defaults, options);
-		
-			if (!rate) var rate = 'fast';			//if no unified rate given
-			var server = opts.server;					//PHP backend
-			var thumbs = opts.thumbs;					//short path for thumbnails (IMAGE fields)
-			var oldValue = null;							//original field value
 
-			//IMAGE field drop event handle
-			var imgDropOpts = {
-				drop:	function(event, ui) {
-					var imgDiv = this;
-					var oldValue = $(imgDiv).attr('title');
-					var newValue = ui.draggable.attr('title');
-					if (newValue != oldValue) {
-						var info = getContainer(this);
-						processStart(info.obj, info.left, info.top, function() {
-							$.fn.acGrid.update(server, 'update', 'html', info.row, info.col, newValue, function(res) {
-								processReady(function() {
-									var newDiv = $(res).droppable(imgDropOpts);
-									$(imgDiv).replaceWith(newDiv);
-								}, rate);
-							});
+		var server		= opts.server;					//PHP backend
+		var rate			= opts.rate;						//transitional effects rate
+		var oldValue	= null;									//original field value
+
+		//IMAGE field drop event handle
+		var imgDropOpts = {
+			drop:	function(event, ui) {
+				var imgDiv = this;
+				var oldValue = $(imgDiv).attr('title');
+				var newValue = ui.draggable.attr('title');
+				if (newValue != oldValue) {
+					var info = getContainer(this);
+					processStart(info.obj, info.left, info.top, function() {
+						$.fn.acGrid.update(server, 'update', 'html', info.row, info.col, newValue, function(res) {
+							processReady(function() {
+								var newDiv = $(res).droppable(imgDropOpts);
+								$(imgDiv).replaceWith(newDiv);
+							}, rate);
 						});
-					}
+					});
 				}
-			};
+			}
+		};
 
-			//case TEXT type field
-			$('div.text')
-			.focus(function() {								//field focused
-			oldValue = $(this).html();
-			var txtDiv = this;
-			$(txtDiv).keypress(function(e) {	//catch Enter pressed
-				if (e.which == 13) {
-					e.preventDefault();
-					txtDiv.blur();
+		//case TEXT type field
+		$('div.text')
+			.focus(function() {									//field focused
+				oldValue = $(this).html();
+				var txtDiv = this;
+				$(txtDiv).keypress(function(e) {	//catch Enter key
+					if (e.which == 13) {
+						e.preventDefault();
+						txtDiv.blur();
+					}
+				});
+			})
+			.blur(function() {									//end of field focus, send change (if any)
+				var newValue = $(this).html();
+				if (newValue != oldValue) {
+					var info = getContainer(this);
+					processStart(info.obj, info.left, info.top, function() {
+						$.fn.acGrid.update(server, 'update', 'json', info.row, info.col, newValue, function(res) {
+							if (res.result == 'Ok') processReady(null, rate);
+							else debug(res.result);
+						});
+					});
 				}
 			});
-		})
-		.blur(function() {									//end of field focus, send change if any
-			var newValue = $(this).html();
-			if (newValue != oldValue) {
-				var info = getContainer(this);
-				processStart(info.obj, info.left, info.top, function() {
-					$.fn.acGrid.update(server, 'update', 'json', info.row, info.col, newValue, function(res) {
-						if (res.result == 'Ok') processReady(null, rate);
-						else debug(res.result);
-					});
-				});
-			}
-		});
 		
 		//case SELECTBOX driven field
 		$('div.select')
-		.live('click', function() {									//field clicked => invoke selectbox
-			var selDiv = this;
-			var txt = $(selDiv).html();
-			var info = getContainer(selDiv);
-			var selBox = '#sel' + info.col;
-			oldValue = getSelValue(txt, selBox, 1);
-			$(selBox).css({left: info.left, top: info.top});
-			togglePair(selDiv, selBox, rate);
-			$(selBox)
-			.change(function() {							//send changed value
-				$(this).unbind('change');
-				processStart(info.obj, info.left, info.top, function() {
-					var newValue = $(selBox).val();
-					$.fn.acGrid.update(server, 'update', 'html', info.row, info.col, newValue, function(res) {
-						processReady(function() {
-							$(selDiv).replaceWith(res);
-							togglePair(selBox, selDiv, rate);
-						}, rate);							
+			.live('click', function() {					//field clicked => invoke selectbox
+				var selDiv = this;
+				var txt = $(selDiv).html();
+				var info = getContainer(selDiv);
+				var selBox = '#sel' + info.col;
+				oldValue = getSelValue(txt, selBox, 1);
+				$(selBox).css({left: info.left, top: info.top});
+				togglePair(selDiv, selBox, rate);
+				$(selBox)
+					.change(function() {						//selectbox value changed
+						$(this).unbind('change');			//immediately unbind the change event - otherway is chained
+						processStart(info.obj, info.left, info.top, function() {
+							var newValue = $(selBox).val();
+							$.fn.acGrid.update(server, 'update', 'html', info.row, info.col, newValue, function(res) {
+								processReady(function() {
+									$(selDiv).replaceWith(res);
+									togglePair(selBox, selDiv, rate);
+								}, rate);
+							});
+						});
 					});
-				});
 			});
-		});
 		
 		//case RADIOBUTTONS field
 		$('div.radio input')
-		.change(function() {
-			var container = $(this).parent();
-			var radioBtn = this;
-			var info = getContainer(container);
-			processStart(info.obj, info.left, info.top, function() {
-				var newValue = $(radioBtn).val();
-				$.fn.acGrid.update(server, 'update', 'json', info.row, info.col, newValue, function(res) {
-					if (res.result == 'Ok') processReady(function() {
-						$(radioBtn).blur();
-					}, rate);
-					else debug(res.result);
+			.change(function() {
+				var container = $(this).parent();
+				var radioBtn = this;
+				var info = getContainer(container);
+				processStart(info.obj, info.left, info.top, function() {
+					var newValue = $(radioBtn).val();
+					$.fn.acGrid.update(server, 'update', 'json', info.row, info.col, newValue, function(res) {
+						if (res.result == 'Ok') processReady(function() {
+							$(radioBtn).blur();
+						}, rate);
+						else debug(res.result);
+					});
 				});
 			});
-		});
 
 		//case IMAGE field
 		$('div.image')
-		.droppable(imgDropOpts);
+			.droppable(imgDropOpts);
 
 		return this;
 	}

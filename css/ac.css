@@ -1,3 +1,35 @@
+/*********************** Wrapper **************************/
+div.acWrapper {
+	margin: .5em;
+	padding: 1em;
+}
+div.acWrapper h3 {
+	text-align: center;
+	font-variant: small-caps;
+}
+/*********************** Query ****************************/
+div#acQuery {
+	display: none;
+	margin: .5em;
+	padding: 1em;
+}
+/*********************** Toolbar **************************/
+div.acToolbar {
+	margin-top: 1em;
+}
+div.acToolbar ul {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+div.acToolbar ul li {
+	display: inline;
+}
+div.acToolbar ul li a {
+	margin-bottom: 2px;
+	padding: 3px 10px;
+}
+
 .acSelect {
 	font: 16px/1.5 "Trebuchet MS", "Geneva CE", lucida, sans-serif;
 	display: none;
@@ -8,12 +40,19 @@
 	border: none;
 }
 img {
+	margin: 0;
+	padding: 0;
 	border: none;
 }
 #acHiddenVars {
 	display: none;
 }
 /*********************** ACGrid ***************************/
+div#acGridWrapper {
+	margin: .5em;
+	padding: .5em;
+	border: 1px dashed black;
+}
 table.acGrid {
 	border: 1px solid #000000;
 	border-collapse: collapse;
@@ -64,9 +103,9 @@ table.acGrid td div.image {
 	padding-right: .2em;
 }
 #acPicList {
-	height: 215px;
+	height: 180px;
 	margin: 0;
-	overflow: auto;
+	overflow: scroll;
 	overflow-x: hidden;
 	padding: .5em;
 	border-left: 1px solid #999999;
@@ -79,15 +118,11 @@ div.acPicThumbnail {
 	height: 75px;
 	margin: 1em;
 	padding: 0;
+	font-size: 50%;
 	border: 1px dashed #DDDDDD;
 }
 div.acPicThumbnail img {
 	border: 1px dashed #DDDDDD;
-}
-div.acPicThumbnail p {
-	margin: 0;
-	padding: .1em;
-	font-size: 50%;
 }
 #acPicTrash {
 	clear: both;

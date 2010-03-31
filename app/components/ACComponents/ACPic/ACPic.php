@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Petr Blazicek
  * @copyright 2010
@@ -53,32 +54,57 @@ class ACPic extends Control
 
 
 	/***************** Getters & Setters ********************/
+
+	public function getImagePath() {
+		return $this->imagePath;
+	}
+
 	public function setImagePath($imagePath) {
 		$this->imagePath = $imagePath;
+	}
+
+	public function getImageUri() {
+		return $this->imageUri;
 	}
 
 	public function setImageUri($imageUri) {
 		$this->imageUri = $imageUri;
 	}
 
+	public function getThumbPath() {
+		return $this->thumbPath;
+	}
+
 	public function setThumbPath($thumbPath) {
 		$this->thumbPath = $thumbPath;
+	}
+
+	public function getThPrefix() {
+		return $this->thPrefix;
 	}
 
 	public function setThPrefix($thPrefix) {
 		$this->thPrefix = $thPrefix;
 	}
 
+	public function getImageWidth() {
+		return $this->imageWidth;
+	}
+
 	public function setImageWidth($imageWidth) {
 		$this->imageWidth = $imageWidth;
+	}
+
+	public function getImageHeight() {
+		return $this->imageHeight;
 	}
 
 	public function setImageHeight($imageHeight) {
 		$this->imageHeight = $imageHeight;
 	}
 
-	public function setListId($listId) {
-		$this->listId = $listId;
+	public function getRate() {
+		return $this->rate;
 	}
 
 	public function setRate($rate) {
@@ -139,33 +165,31 @@ class ACPic extends Control
 	{
 		foreach ($_POST as $var => $value) $$var = $value;
 
-		$res = 'Ok';									//suppose success
+		$result = 'Ok';
 
 		if (!empty($_FILES)) {				//new file uploaded
+
 			$tempFile = $_FILES['Filedata']['tmp_name'];
 			$targetFile = $this->imagePath . '/' . $_FILES['Filedata']['name'];
-			if(move_uploaded_file($tempFile, $targetFile)) {
-				$this->checkImages();
-				$res = '1';
-			}
+			if(!move_uploaded_file($tempFile, $targetFile)) $result = 'Moving uploaded file failed';
+			else $this->checkImages();
+
 		} else {											//no upload => check command
+
 			switch ($cmd) {
 				case 'delete':						//delete => delete image & thumbnail
 					$path = $this->imagePath . '/' . $filename;
 					$thumb = $this->imagePath . '/' . $this->thumbPath . '/' . $this->thPrefix . $filename;
-					if (is_file($path)) if (!unlink($path)) $res = 'Unable to delete image ' . $filename;
-					if (is_file($thumb)) if (!unlink($thumb)) $res = 'Unable to delete thumbnail ' . $this->thPrefix . $filename;
+					if (is_file($path)) if (!unlink($path)) $result = 'Unable to delete image ' . $filename;
+					if (is_file($thumb)) if (!unlink($thumb)) $result = 'Unable to delete thumbnail ' . $this->thPrefix . $filename;
 					break;
 				default:									//unknown command sent
-					$res = 'Unrecognised command ' . $cmd;
+					$result = 'Unrecognised command ' . $cmd;
 					break;
 			}
-			if ($type == 'json') {			//format the response
-				$wrk['result'] = $res;
-				$res = json_encode($wrk);
-			}
 		}
-		die ($res);
+		$this->presenter->payload->result = $result;
+		$this->presenter->terminate(new JsonResponse($this->presenter->payload));
 	}
 
 }

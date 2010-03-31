@@ -17,18 +17,16 @@ class DefaultPresenter extends BasePresenter
 
 	public function actionDefault()
 	{
+
 	}
-	
+
 	protected function createComponentGrid()
 	{
-		$grid = new ACGrid('users');
-		
-		$grid->addText('username', 'User');
-		$grid->addText('fullname', 'Full name');
+		$grid = new ACGrid('users', 'Users');
+		$grid->addText('username', 'Username');
+		$grid->addText('fullname', 'Fullname');
 		$grid->addSelect('rights', 'Role', array(1=>'Registered',2=>'Moderator',255=>'Administrator'));
-		$grid->addRadio('gender', 'Gender', array(0=>'Man',1=>'Woman'));
 		$grid->addImage('pic', 'Avatar');
-		
 		return $grid;
 	}
 
@@ -37,7 +35,7 @@ class DefaultPresenter extends BasePresenter
 		$pic = new ACPic('images');
 		return $pic;
 	}
-	
+
 }
 
 ?>

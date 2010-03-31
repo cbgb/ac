@@ -12,6 +12,7 @@
  */
 class ACGridSelect extends ACGridColumn
 {
+	/** @var array string */
 	protected $options = array();
 
 
@@ -32,10 +33,12 @@ class ACGridSelect extends ACGridColumn
 
 	/****** Setters & Getters **********************/
 
-	public function setOptions($options)
-	{
+	public function getOptions() {
+		return $this->options;
+	}
+
+	public function setOptions($options) {
 		$this->options = $options;
-		$this->createSelectbox();
 	}
 
 
@@ -45,7 +48,7 @@ class ACGridSelect extends ACGridColumn
 	 * @param DibiFluent $row	table row
 	 * @return string					html block
 	 */
-	public function filter($row)
+	public function render($row)
 	{
 		$value = $row[$this->index];
 		$content = $this->options ? $this->options[$value] : $value;

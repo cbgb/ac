@@ -12,12 +12,25 @@
  */
 class ACGridImg extends ACGridColumn
 {
+	/** @var string */
 	protected $folder;
+
+	/** @var string */
 	protected $thPrefix;
+
+	/** @var string */
 	protected $path;
+
+	/** @var string */
 	protected $uri;
+
+	/** @var integer */
 	protected $width;
+
+	/** @var integer */
 	protected $height;
+
+	/** @var string */
 	protected $defaultImage;
 
 
@@ -44,24 +57,60 @@ class ACGridImg extends ACGridColumn
 
 	/****** Setters & Getters **********************/
 
+	public function getFolder() {
+		return $this->folder;
+	}
+
 	public function setFolder($folder) {
 		$this->folder = $folder;
+	}
+
+	public function getThPrefix() {
+		return $this->thPrefix;
+	}
+
+	public function setThPrefix($thPrefix) {
+		$this->thPrefix = $thPrefix;
+	}
+
+	public function getPath() {
+		return $this->path;
+	}
+
+	public function setPath($path) {
+		$this->path = $path;
+	}
+
+	public function getUri() {
+		return $this->uri;
+	}
+
+	public function setUri($uri) {
+		$this->uri = $uri;
+	}
+
+	public function getWidth() {
+		return $this->width;
 	}
 
 	public function setWidth($width) {
 		$this->width = $width;
 	}
 
+	public function getHeight() {
+		return $this->height;
+	}
+
 	public function setHeight($height) {
 		$this->height = $height;
 	}
 
-	public function setDefaultImage($defaultImage) {
-		$this->defaultImage = $defaultImage;
+	public function getDefaultImage() {
+		return $this->defaultImage;
 	}
 
-	public function setThPrefix($thPrefix) {
-		$this->thPrefix = $thPrefix;
+	public function setDefaultImage($defaultImage) {
+		$this->defaultImage = $defaultImage;
 	}
 
 
@@ -71,9 +120,9 @@ class ACGridImg extends ACGridColumn
 	 * @param DibiFluent $row	table row
 	 * @return string					html block
 	 */
-	public function filter($row)
+	public function render($row)
 	{
-		$uri = $this->uri . '/' . $this->thPrefix . $this->defaultImage;
+		$uri = $this->uri . '/' . $this->thPrefix . $this->defaultImage; //suppose no image
 		$filename = '';
 		$w = $this->width;
 		$h = $this->height;

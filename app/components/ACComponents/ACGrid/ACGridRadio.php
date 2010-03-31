@@ -12,6 +12,7 @@
  */
 class ACGridRadio extends ACGridColumn
 {
+	/** @var array string */
 	protected $options = array();
 	
 
@@ -32,6 +33,10 @@ class ACGridRadio extends ACGridColumn
 
 	/****** Setters & Getters **********************/
 
+	public function getOptions() {
+		return $this->options;
+	}
+
 	public function setOptions($options) {
 		$this->options = $options;
 	}
@@ -43,7 +48,7 @@ class ACGridRadio extends ACGridColumn
 	 * @param DibiFluent $row	table row
 	 * @return string					html block
 	 */
-	public function filter($row)
+	public function render($row)
 	{
 		$value = $row[$this->index];
 		$html = Html::el('div')->class('radio')->style(array('width' => $this->width));

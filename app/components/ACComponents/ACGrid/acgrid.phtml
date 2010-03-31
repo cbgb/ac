@@ -1,30 +1,67 @@
 <script type="text/javascript">
+//<![CDATA[
 	$(document).ready(function() {
 		$('.acGrid').acGrid({
 			server:	{link server!},
 			rate:		{$rate}
 		});
 	});
+//]]>
 </script>
 
-<h3>{$header}</h3>
+<div class="acWrapper ui-widget-content ui-corner-all">
 
-{foreach $cols as $col}
-	{!$col->html}
-{/foreach}
-<table class="acGrid">
-	<tr>
-		{foreach $cols as $col}
-			<th>{$col->caption}</th>
-		{/foreach}
-	</tr>
-	
-	{foreach $rowset as $row}
+	<h3>{$header}</h3>
+
+	{foreach $cols as $col}
+		{!$col->html}
+	{/foreach}
+
+	<table class="acGrid">
+
 		<tr>
 			{foreach $cols as $col}
-				<td id="{$col->index}-{$row->id}">{!$col->filter($row)}</td>
-   		{/foreach}
+			<th title="Column index: '{$col->index}'">{$col->caption}</th>
+			{/foreach}
 		</tr>
-	{/foreach}
-	
-</table>
+
+		{if $rowset}
+
+			{foreach $rowset as $row}
+				<tr>
+					{foreach $cols as $col}
+					<td id="{$col->index}-{$row->id}">{!$col->render($row)}</td>
+					{/foreach}
+				</tr>
+			{/foreach}
+
+		{else}
+
+			<h4><em>EMPTY SOURCE</em></h4>
+
+		{/if}
+
+	</table>
+
+	{if $newCap || $delCap}
+		<div class="acToolbar">
+
+			<ul>
+				{if $newCap}
+					<li><a href="#" id="acGridNew" class="ui-state-default ui-corner-all">{$newCap}</a></li>
+				{/if}
+				{if $delCap}
+					<li><a href="#" id="acGridDel" class="ui-state-default ui-corner-all">{$delCap}</a></li>
+				{/if}
+			</ul>
+
+			<div id="acQuery" class="ui-widget-content ui-corner-all">
+				<form>
+					<input type="text" size="100" />
+				</form>
+			</div>
+
+		</div>
+	{/if}
+
+</div>

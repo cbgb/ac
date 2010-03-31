@@ -25,13 +25,16 @@
 				var oldValue = $(imgDiv).attr('title');
 				var newValue = ui.draggable.attr('title');
 				if (newValue != oldValue) {
+					if (newValue == 'empty.png') newValue = '';
 					var info = getContainer(this);
 					processStart(info.obj, info.left, info.top, function() {
-						$.fn.acGrid.update(server, 'update', 'html', info.row, info.col, newValue, function(res) {
-							processReady(function() {
-								var newDiv = $(res).droppable(imgDropOpts);
-								$(imgDiv).replaceWith(newDiv);
-							}, rate);
+						$.fn.acGrid.update(server, 'update', 'html', info.row, info.col, newValue, function(payload) {
+							if (payload.result == 'Ok') {
+								processReady(function() {
+									var newDiv = $(payload.html).droppable(imgDropOpts);
+									$(imgDiv).replaceWith(newDiv);
+								}, rate);
+							} else debug(payload.result);
 						});
 					});
 				}
@@ -55,9 +58,9 @@
 				if (newValue != oldValue) {
 					var info = getContainer(this);
 					processStart(info.obj, info.left, info.top, function() {
-						$.fn.acGrid.update(server, 'update', 'json', info.row, info.col, newValue, function(res) {
-							if (res.result == 'Ok') processReady(null, rate);
-							else debug(res.result);
+						$.fn.acGrid.update(server, 'update', 'json', info.row, info.col, newValue, function(payload) {
+							if (payload.result == 'Ok') processReady(null, rate);
+							else debug(payload.result);
 						});
 					});
 				}
@@ -78,11 +81,13 @@
 						$(this).unbind('change');			//immediately unbind the change event - otherway is chained
 						processStart(info.obj, info.left, info.top, function() {
 							var newValue = $(selBox).val();
-							$.fn.acGrid.update(server, 'update', 'html', info.row, info.col, newValue, function(res) {
-								processReady(function() {
-									$(selDiv).replaceWith(res);
-									togglePair(selBox, selDiv, rate);
-								}, rate);
+							$.fn.acGrid.update(server, 'update', 'html', info.row, info.col, newValue, function(payload) {
+								if (payload.result == 'Ok') {
+									processReady(function() {
+										$(selDiv).replaceWith(payload.html);
+										togglePair(selBox, selDiv, rate);
+									}, rate);
+								} else debug(payload.result);
 							});
 						});
 					});
@@ -96,11 +101,11 @@
 				var info = getContainer(container);
 				processStart(info.obj, info.left, info.top, function() {
 					var newValue = $(radioBtn).val();
-					$.fn.acGrid.update(server, 'update', 'json', info.row, info.col, newValue, function(res) {
-						if (res.result == 'Ok') processReady(function() {
+					$.fn.acGrid.update(server, 'update', 'json', info.row, info.col, newValue, function(payload) {
+						if (payload.result == 'Ok') processReady(function() {
 							$(radioBtn).blur();
 						}, rate);
-						else debug(res.result);
+						else debug(payload.result);
 					});
 				});
 			});
@@ -108,6 +113,35 @@
 		//case IMAGE field
 		$('div.image')
 			.droppable(imgDropOpts);
+
+		//case New button pressed
+		$('a#acGridNew').click(function() {
+			$.fn.acGrid.update(server, 'new', 'json', null, null, null, function(payload) {
+				if (payload.result == 'Ok') location.reload();
+				else debug(payload.result);
+			});
+		});
+
+		//case Delete button pressed
+		$('a#acGridDel').click(function() {
+			$('#acQuery').dialog({
+				width:	800,
+				height:	60,
+				title:	'Query'
+			});
+			var form = $('#acQuery').find('form');
+			var expr = $(form).find('input');
+			$(expr).focus();
+			$(form).submit(function(event) {
+				event.preventDefault();
+				$(this).unbind('submit');
+				$.fn.acGrid.update(server, 'delete', 'json', null, null, $(expr).val(), function(payload) {
+					$(expr).val('');
+					if (payload.result == 'Ok') location.reload();
+					else debug(payload.result);
+				});
+			});
+		});
 
 		return this;
 	}
@@ -161,7 +195,6 @@
 	{
 		var sign = 'span#process';
 		if ($(sign).length) {
-			if (!rate) var rate = 'fast';
 			$(sign).fadeOut(rate, function(){
 				$(sign).remove();
 				if (callback) {
@@ -194,12 +227,8 @@ $.fn.acGrid.update = function(server, cmd, type, row, col, value, callback)
 		row:	row,
 		col:	col,
 		content: value
-	}, function(res) {
-		if (type == 'json') {	//JSON response
-			callback(eval('(' + res + ')'));
-		} else {							//HTML response
-			callback(res);
-		}
+	}, function(payload) {
+			callback(payload);
 	});
 }
 

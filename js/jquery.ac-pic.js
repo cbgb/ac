@@ -87,15 +87,15 @@
 			drop:	function(event, ui) {
 				var obj = ui.draggable;
 				var name = obj.attr('title');
-				$.fn.acPic.update(server, 'delete', 'json', name, function(res) {
-					if (res.result == 'Ok') $(obj).remove();
+				$.fn.acPic.update(server, 'delete', name, function(result) {
+					if (result == 'Ok') $(obj).remove();
 				});
 				$('#acTrashImg').toggleClass('acTrashImgActive');
 			}
 		});
 
-		$('div.image').click(function() {		//open dialog when picture field clicked
-			$(x).dialog('open');
+		$('div.image').live('click', function() {		//open dialog when picture field clicked
+			$(x).dialog('open');			
 		});
 
 	}
@@ -124,18 +124,13 @@
 })(jQuery);
 
 //AJAX update request function
-$.fn.acPic.update = function(server, cmd, type, filename, callback)
+$.fn.acPic.update = function(server, cmd, filename, callback)
 {
 	$.post(server, {
 		cmd:	cmd,
-		type:	type,
 		filename: filename
-	}, function(res) {
-		if (type == 'json') {	//JSON response
-			callback(eval('(' + res + ')'));
-		} else {							//HTML response
-			callback(res);
-		}
+	}, function(payload) {
+		callback(payload.result);
 	});
 }
 

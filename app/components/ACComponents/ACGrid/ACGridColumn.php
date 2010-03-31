@@ -12,12 +12,16 @@
  */
 abstract class ACGridColumn extends Control
 {
+	/** @var string */
 	protected $index;
-	
+
+	/** @var string */
 	protected $caption;
-	
+
+	/** @var string */
 	protected $width;
-	
+
+	/** @var string */
 	protected $html;
 	
 
@@ -78,7 +82,7 @@ abstract class ACGridColumn extends Control
 	 * @param DibiFluent $row	table row
 	 * @return string					html block
 	 */
-	public function filter($row)
+	public function render($row)
 	{
 		$value = $row[$this->index];
 		$html = Html::el('div')->contenteditable('true')->class('text')->style(array('width' => $this->width))
